@@ -29,6 +29,7 @@ class Vegetacao(models.Model):
 class TipoPlanta(models.Model):
     tipo = models.CharField(max_length=70)
     adubo = models.CharField(max_length=70)
-    hora = models.DataField
+    hora = models.DateTimeField(auto_now_add=True)
+
     
 
