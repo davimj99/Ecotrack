@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack - Dashboard de Monitoramento Ambiental</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Meta tags para SEO -->
+    <meta name="author" content="EcoTrack Team">
+    <meta name="keywords" content="monitoramento ambiental, desmatamento, reflorestamento, sustentabilidade">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <meta name="description" content="Sistema de monitoramento ambiental com mapeamento de áreas afetadas por desmatamento, seca e queimadas">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 EcoTrack</h1>
+            <h2>Dashboard de Monitoramento Ambiental</h2>
+        </header>
+
+        <main>
+            <section class="stats-container">
+                <div class="stat-card">
+                    <a href="{% url 'monitoramento' %}" class="btn-monitoramento">Ver Monitoramento</a>
+                    <span class="stat-icon">🗺️</span>
+                    <div class="stat-title">Áreas Monitoradas</div>
+                    <div class="stat-value">{{ total_areas|default:"0" }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🌱</span>
+                    <div class="stat-title">Mudas Plantadas</div>
+                    <div class="stat-value">{{ total_mudas|default:"0" }}</div>
+                </div>
+                
+                <div class="stat-card">
+                    <a href="{% url 'lista_postagens' %}">
+                    <span class="stat-icon">📢</span>
+                    <div class="stat-title">Postagens Publicadas</div>
+                    <div class="stat-value">{{ total_posts|default:"0" }}</div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="main-sections">
+                <div class="section-card">
+                    <h3 class="section-title">
+                        <span class="section-icon">💻</span>
+                        Desenvolvimento
+                    </h3>
+                    <ul class="section-list">
+                        <li>Criação de software de mapeamento inteligente</li>
+                        <li>Identificação de áreas afetadas por desmatamento</li>
+                        <li>Monitoramento de regiões com seca</li>
+                        <li>Detecção de focos de queimadas</li>
+                        <li>Sugestões automatizadas de recuperação</li>
+                        <li>Análise de dados ambientais em tempo real</li>
+                    </ul>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title">
+                        <span class="section-icon">📋</span>
+                        Documentação e Comunicação
+                    </h3>
+                    <ul class="section-list">
+                        <li>Elaboração da documentação técnica</li>
+                        <li>Atualização contínua do dreamshaper</li>
+                        <li>Gestão de perfis nas redes sociais</li>
+                        <li>Divulgação de ações e resultados</li>
+                        <li>Relatórios de impacto ambiental</li>
+                        <li>Comunicação com comunidades locais</li>
+                    </ul>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title">
+                        <span class="section-icon">🌳</span>
+                        Trabalho de Campo
+                    </h3>
+                    <ul class="section-list">
+                        <li>Execução do plantio de mudas nativas</li>
+                        <li>Monitoramento do crescimento das plantas</li>
+                        <li>Coleta de dados ambientais locais</li>
+                        <li>Treinamento de equipes de campo</li>
+                        <li>Parcerias com comunidades rurais</li>
+                        <li>Manutenção das áreas recuperadas</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

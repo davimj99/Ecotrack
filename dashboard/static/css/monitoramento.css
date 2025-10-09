@@ -1,0 +1,81 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f9f6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.monitoramento-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2rem;
+}
+
+.btn-voltar {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-voltar:hover {
+    background-color: #45a049;
+}
+
+.mapa-container {
+    margin-bottom: 30px;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.areas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.area-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.area-card:hover {
+    transform: scale(1.03);
+}
+
+.area-card.ok { border-left: 5px solid #4CAF50; }
+.area-card.alerta { border-left: 5px solid #FFC107; }
+.area-card.recuperacao { border-left: 5px solid #F44336; }
+
+
+/*
+#map {
+    width: 100%;
+    height: 500px; /* ou qualquer altura desejada 
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+/*

@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack - Postagens</title>
+    <link rel="stylesheet" href="{% static 'css/estilos_post.css' %}">
+</head>
+<body>
+    <div class="container-postagens">
+        <header>
+            <h1>📢 Postagens do EcoTrack</h1>
+            <a href="{% url 'dashboard' %}" class="voltar">← Voltar para o Dashboard</a>
+        </header>
+
+        <main>
+            <section class="posts-masonry">
+                {% if posts %}
+                    {% for post in posts %}
+                        <div class="post-card">
+                            {% if post.imagem %}
+                                <div class="post-image">
+                                    <img src="{{ post.imagem.url }}" alt="{{ post.titulo }}">
+                                </div>
+                            {% endif %}
+                            <div class="post-content">
+                                <h2>{{ post.titulo }}</h2>
+                                <p>{{ post.conteudo|truncatewords:35 }}</p>
+                                <small>Criado em: {{ post.publicado_em|date:"d/m/Y H:i" }}</small>
+                                <a href="#" class="btn-detalhes">Ver mais</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="sem-postagens">Não há postagens disponíveis.</p>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

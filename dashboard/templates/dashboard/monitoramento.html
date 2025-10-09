@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack - Monitoramento de Áreas</title>
+    <link rel="stylesheet" href="{% static 'css/monitoramento.css' %}">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 400px; width: 100%; margin-bottom: 20px; border-radius: 12px; }
+        .leaflet-popup-content-wrapper { border-radius: 10px; }
+        .areas-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
+        .area-card { cursor: pointer; transition: transform 0.2s; padding: 10px; border-radius: 8px; }
+        .area-card:hover { transform: scale(1.05); }
+        .filters { margin-bottom: 15px; }
+        .filter-btn { margin-right: 10px; padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; }
+        .filter-btn.active { font-weight: bold; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="monitoramento-container">
+        <header>
+            <h1>🌍 Monitoramento de Áreas</h1>
+            <a href="{% url 'dashboard' %}" class="btn-voltar">⬅ Voltar</a>
+        </header>
+
+        <main>
+            <section class="mapa-container">
+                <h2>Mapa de Áreas Monitoradas</h2>
+
+                <!-- Filtros -->
+                <div class="filters">
+                    <button class="filter-btn active" data-status="all">Todos</button>
+                    <button class="filter-btn" data-status="ok">OK</button>
+                    <button class="filter-btn" data-status="atenção">Atenção</button>
+                    <button class="filter-btn" data-status="recuperação">Recuperação</button>
+                </div>
+
+                <div id="map"></div>
+            </section>
+
+            <section class="areas-grid" id="areasGrid">
+                <div class="area-card ok" data-index="0" data-status="ok">
+                    <h3>Área 1</h3>
+                    <p>Status: OK</p>
+                    <p>Último monitoramento: 20/09/2025</p>
+                </div>
+                <div class="area-card alerta" data-index="1" data-status="atenção">
+                    <h3>Área 2</h3>
+                    <p>Status: Atenção</p>
+                    <p>Último monitoramento: 21/09/2025</p>
+                </div>
+                <div class="area-card recuperacao" data-index="2" data-status="recuperação">
+                    <h3>Área 3</h3>
+                    <p>Status: Recuperação</p>
+                    <p>Último monitoramento: 19/09/2025</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Inicializa o mapa
+        const map = L.map('map').setView([-15.7801, -47.9292], 5);
+
+        // Camada OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Dados das áreas
+        const areas = [
+            {lat: -15.7801, lng: -47.9292, status: 'ok', title: 'Área 1', last: '20/09/2025'},
+            {lat: -10.9472, lng: -37.0731, status: 'atenção', title: 'Área 2', last: '21/09/2025'},
+            {lat: -3.7172, lng: -38.5434, status: 'recuperação', title: 'Área 3', last: '19/09/2025'}
+        ];
+
+        // Função para mapear status para cores
+        function getStatusColor(status) {
+            switch(status.toLowerCase()) {
+                case 'ok': return 'green';
+                case 'atenção': return 'orange';
+                case 'recuperação': return 'red';
+                default: return 'blue';
+            }
+        }
+
+        // Cria marcadores e guarda referências
+        const markers = areas.map(area => {
+            const color = getStatusColor(area.status);
+            const marker = L.circleMarker([area.lat, area.lng], {
+                radius: 10,
+                fillColor: color,
+                color: '#000',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map)
+            .bindPopup(`
+                <b>${area.title}</b><br>
+                Status: <span style="color:${color}; font-weight:bold">${area.status}</span><br>
+                Último monitoramento: ${area.last}
+            `);
+            return marker;
+        });
+
+        // Interação: clique no card centraliza no mapa
+        const areaCards = document.querySelectorAll('.area-card');
+        areaCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const index = card.getAttribute('data-index');
+                const area = areas[index];
+                const marker = markers[index];
+                map.setView([area.lat, area.lng], 10, {animate: true});
+                marker.openPopup();
+            });
+        });
+
+        // Filtros
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Atualiza estado ativo
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const status = btn.getAttribute('data-status').toLowerCase();
+
+                areaCards.forEach((card, index) => {
+                    const cardStatus = card.getAttribute('data-status').toLowerCase();
+                    if(status === 'all' || cardStatus === status) {
+                        card.style.display = 'block';
+                        markers[index].addTo(map);
+                    } else {
+                        card.style.display = 'none';
+                        map.removeLayer(markers[index]);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
