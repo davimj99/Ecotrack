@@ -5,5 +5,6 @@ urlpatterns = [
     path("", views.index, name="dashboard"),
     path('postagens/', views.lista_postagens, name='lista_postagens'),
     path('monitoramento/', views.monitoramento_view, name='monitoramento'),
+    path('post/<int:pk>/', views.post_detail, name='post_detail'),
     
 ]

@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.titulo }} - EcoTrack</title>
+    <link rel="stylesheet" href="{% static 'css/estilos_post.css' %}">
+    <link rel="icon" href="{% static 'images/banco-global.png' %}" type="image/banco-global.png">
+</head>
+<body>
+    <div class="container-postagens">
+        <!-- Cabeçalho -->
+        <header class="header-posts">
+            <h1>{{ post.titulo }}</h1>
+        </header>
+
+        <!-- Conteúdo completo -->
+        <main>
+            <div class="post-card post-detail-card">
+                {% if post.imagem %}
+                    <div class="post-image">
+                        <img src="{{ post.imagem.url }}" alt="{{ post.titulo }}">
+                    </div>
+                {% endif %}
+                <div class="post-content">
+                    <!-- Aqui mostramos TODO o conteúdo, sem truncar -->
+                    <p>{{ post.conteudo|linebreaksbr }}</p>
+                    <small>Criado em: {{ post.publicado_em|date:"d/m/Y H:i" }}</small>
+                </div>
+            </div>
+
+            <!-- Botão voltar -->
+            <div style="text-align:center; margin-top:1.5rem;">
+                <a href="{% url 'lista_postagens' %}" class="btn-detalhes">← Voltar para Postagens</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
