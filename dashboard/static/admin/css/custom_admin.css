@@ -1,0 +1,70 @@
+/* ============================= */
+/* Estilo personalizado do Admin */
+/* ============================= */
+
+/* Background e fonte geral */
+body {
+    background-color: #f0f7f5; /* verde claro suave */
+    font-family: 'Inter', sans-serif;
+}
+
+/* Barra superior */
+#header {
+    background-color: #2e7d32; /* verde escuro */
+    color: #fff;
+}
+
+/* Título da página */
+h1, h2, h3 {
+    color: #1b5e20; /* verde mais escuro */
+}
+
+/* Links do admin */
+a {
+    color: #2e7d32;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #66bb6a;
+}
+
+/* Botões */
+input[type="submit"], .button, .submit-row input {
+    background-color: #43a047;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 8px 15px;
+}
+
+input[type="submit"]:hover, .button:hover, .submit-row input:hover {
+    background-color: #66bb6a;
+}
+
+/* Tabelas */
+table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th {
+    background-color: #81c784; /* verde suave */
+    color: #1b5e20;
+}
+
+/* Alternar cores das linhas */
+tr:nth-child(even) {
+    background-color: #e8f5e9;
+}
+
+/* Campos readonly */
+.readonly {
+    background-color: #c8e6c9;
+}
+
+/* Destaque para áreas críticas */
+tr.field-area_critica td {
+    background-color: #ffccbc !important; /* destaque laranja */
+    font-weight: bold;
+}

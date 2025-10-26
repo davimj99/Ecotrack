@@ -12,7 +12,6 @@ body {
     padding: 20px;
 }
 
-
 header {
     display: flex;
     justify-content: space-between;
@@ -60,22 +59,53 @@ header h1 {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centraliza o conteúdo */
+    text-align: center;
 }
 
 .area-card:hover {
     transform: scale(1.03);
 }
 
+/* Bordas coloridas conforme status */
 .area-card.ok { border-left: 5px solid #4CAF50; }
 .area-card.alerta { border-left: 5px solid #FFC107; }
 .area-card.recuperacao { border-left: 5px solid #F44336; }
 
-
-/*
-#map {
-    width: 100%;
-    height: 500px; /* ou qualquer altura desejada 
-    border: 1px solid #ccc;
-    border-radius: 10px;
+/* Imagens dentro do card */
+.area-card img {
+    width: 100%;          /* largura máxima do card */
+    height: 150px;        /* altura fixa para todas as imagens */
+    object-fit: cover;    /* corta e ajusta a imagem mantendo proporção */
+    border-radius: 8px;
+    margin-top: 10px;
 }
-/*
+
+/* Ajuste responsivo das imagens e cards */
+@media (max-width: 768px) {
+    .area-card img {
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .area-card img {
+        height: 100px;
+    }
+}/* Leaflet popup customizado */
+.leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 250px; /* limita o tamanho do popup */
+}
+
+.leaflet-popup-content img {
+    width: 100%;        /* imagem ocupa todo o popup */
+    height: 150px;      /* altura fixa */
+    object-fit: cover;  /* corta e ajusta proporcionalmente */
+    border-radius: 6px;
+    display: block;
+    margin: 5px 0 0 0;
+}

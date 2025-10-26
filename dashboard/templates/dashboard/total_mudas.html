@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total de Mudas</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        /* Caso queira estilos extras específicos para esta página */
+        .card {
+            background-color: #f0f9ff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h1 {
+            font-size: 2.5rem;
+            color: #0d6efd;
+            margin-bottom: 10px;
+        }
+        .card p {
+            font-size: 1.2rem;
+            color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #e0f7fa, #ffffff);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Total de Mudas</h1>
+        <p>{{ total }}</p>
+    </div>
+</body>
+</html>

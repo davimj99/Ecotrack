@@ -273,6 +273,13 @@ header h1::after {
 /* -------------------------
    Página de Detalhe do Post
 ------------------------- */
+.post-video {
+    margin-top: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
 .post-detail-card {
     max-width: 950px;
     margin: 2rem auto;

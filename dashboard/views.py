@@ -31,3 +31,7 @@ def post_list(request):
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'dashboard/post_detail.html', {'post': post})
+
+def total_mudas(request):
+    total = sum(m.quantidade for m in Muda.objects.all())
+    return render(request, 'dashboard/total_mudas.html', {'total': total})

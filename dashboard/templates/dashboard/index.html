@@ -29,13 +29,14 @@
                 </div>
                 
                 <div class="stat-card">
-                    <span class="stat-icon">🌱</span>
+                    <a href="{% url 'total_mudas'%}" class="btn-mudas">Ver Mudas</a>
+                    <span class="stat-icon">🌱</span> 
                     <div class="stat-title">Mudas Plantadas</div>
                     <div class="stat-value">{{ total_mudas|default:"0" }}</div>
                 </div>
                 
                 <div class="stat-card">
-                    <a href="{% url 'lista_postagens' %}">
+                    <a href="{% url 'lista_postagens' %}" class="btn-postagens">Ver Postagens</a>
                     <span class="stat-icon">📢</span>
                     <div class="stat-title">Postagens Publicadas</div>
                     <div class="stat-value">{{ total_posts|default:"0" }}</div>

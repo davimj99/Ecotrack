@@ -6,19 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTrack - Monitoramento de Áreas</title>
     <link rel="stylesheet" href="{% static 'css/monitoramento.css' %}">
-    <link rel="icon" href="{% static 'images/banco-global.png' %}" type="image/banco-global.png">
+    <link rel="icon" href="{% static 'images/banco-global.png' %}" type="image/png">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #map { height: 400px; width: 100%; margin-bottom: 20px; border-radius: 12px; }
         .leaflet-popup-content-wrapper { border-radius: 10px; }
+
         .areas-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
-        .area-card { cursor: pointer; transition: transform 0.2s; padding: 10px; border-radius: 8px; }
+        .area-card { cursor: pointer; transition: transform 0.2s; padding: 10px; border-radius: 8px; background: #f4f4f4; border-left: 5px solid transparent; }
         .area-card:hover { transform: scale(1.05); }
+
+        .area-card.critico { border-left-color: red; }
+        .area-card.recuperacao { border-left-color: orange; }
+        .area-card.estavel { border-left-color: green; }
+
         .filters { margin-bottom: 15px; }
-        .filter-btn { margin-right: 10px; padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; }
-        .filter-btn.active { font-weight: bold; text-decoration: underline; }
+        .filter-btn { margin-right: 10px; padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; background: #ddd; }
+        .filter-btn.active { font-weight: bold; text-decoration: underline; background: #bbb; }
+
+        .area-card img { max-width: 100%; border-radius: 6px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -35,30 +43,16 @@
                 <!-- Filtros -->
                 <div class="filters">
                     <button class="filter-btn active" data-status="all">Todos</button>
-                    <button class="filter-btn" data-status="ok">OK</button>
-                    <button class="filter-btn" data-status="atenção">Atenção</button>
-                    <button class="filter-btn" data-status="recuperação">Recuperação</button>
+                    <button class="filter-btn" data-status="critico">Crítico</button>
+                    <button class="filter-btn" data-status="recuperacao">Em Recuperação</button>
+                    <button class="filter-btn" data-status="estavel">Estável</button>
                 </div>
 
                 <div id="map"></div>
             </section>
 
             <section class="areas-grid" id="areasGrid">
-                <div class="area-card ok" data-index="0" data-status="ok">
-                    <h3>Área 1</h3>
-                    <p>Status: OK</p>
-                    <p>Último monitoramento: 20/09/2025</p>
-                </div>
-                <div class="area-card alerta" data-index="1" data-status="atenção">
-                    <h3>Área 2</h3>
-                    <p>Status: Atenção</p>
-                    <p>Último monitoramento: 21/09/2025</p>
-                </div>
-                <div class="area-card recuperacao" data-index="2" data-status="recuperação">
-                    <h3>Área 3</h3>
-                    <p>Status: Recuperação</p>
-                    <p>Último monitoramento: 19/09/2025</p>
-                </div>
+                <!-- Cards serão adicionados dinamicamente -->
             </section>
         </main>
     </div>
@@ -75,76 +69,90 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        // Dados das áreas
-        const areas = [
-            {lat: -15.7801, lng: -47.9292, status: 'ok', title: 'Área 1', last: '20/09/2025'},
-            {lat: -10.9472, lng: -37.0731, status: 'atenção', title: 'Área 2', last: '21/09/2025'},
-            {lat: -3.7172, lng: -38.5434, status: 'recuperação', title: 'Área 3', last: '19/09/2025'}
-        ];
-
         // Função para mapear status para cores
         function getStatusColor(status) {
             switch(status.toLowerCase()) {
-                case 'ok': return 'green';
-                case 'atenção': return 'orange';
-                case 'recuperação': return 'red';
+                case 'critico': return 'red';
+                case 'recuperacao': return 'orange';
+                case 'estavel': return 'green';
                 default: return 'blue';
             }
         }
 
-        // Cria marcadores e guarda referências
-        const markers = areas.map(area => {
-            const color = getStatusColor(area.status);
-            const marker = L.circleMarker([area.lat, area.lng], {
-                radius: 10,
-                fillColor: color,
-                color: '#000',
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            }).addTo(map)
-            .bindPopup(`
-                <b>${area.title}</b><br>
-                Status: <span style="color:${color}; font-weight:bold">${area.status}</span><br>
-                Último monitoramento: ${area.last}
-            `);
-            return marker;
-        });
+        const areaCardsContainer = document.getElementById('areasGrid');
 
-        // Interação: clique no card centraliza no mapa
-        const areaCards = document.querySelectorAll('.area-card');
-        areaCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const index = card.getAttribute('data-index');
-                const area = areas[index];
-                const marker = markers[index];
-                map.setView([area.lat, area.lng], 10, {animate: true});
-                marker.openPopup();
-            });
-        });
+        // Fetch do Django
+        fetch("{% url 'areas_json' %}")
+            .then(response => response.json())
+            .then(areas => {
+                const markers = [];
 
-        // Filtros
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Atualiza estado ativo
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                areas.forEach((area, index) => {
+                    const color = getStatusColor(area.status);
 
-                const status = btn.getAttribute('data-status').toLowerCase();
+                    // Cria marcador no mapa
+                    const marker = L.circleMarker([area.lat, area.lng], {
+                        radius: 10,
+                        fillColor: color,
+                        color: '#000',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map)
+                    .bindPopup(`
+                        <b>${area.title}</b><br>
+                        Status: <span style="color:${color}; font-weight:bold">${area.status}</span><br>
+                        Problema: ${area.problem}<br>
+                        Criado em: ${area.last}<br>
+                        ${area.image ? `<img src="${area.image}" alt="${area.title}">` : ''}
+                    `);
 
-                areaCards.forEach((card, index) => {
-                    const cardStatus = card.getAttribute('data-status').toLowerCase();
-                    if(status === 'all' || cardStatus === status) {
-                        card.style.display = 'block';
-                        markers[index].addTo(map);
-                    } else {
-                        card.style.display = 'none';
-                        map.removeLayer(markers[index]);
-                    }
+                    markers.push(marker);
+
+                    // Cria card
+                    const card = document.createElement('div');
+                    card.className = `area-card ${area.status.toLowerCase()}`;
+                    card.setAttribute('data-index', index);
+                    card.setAttribute('data-status', area.status.toLowerCase());
+                    card.innerHTML = `
+                        <h3>${area.title}</h3>
+                        <p>Status: ${area.status}</p>
+                        <p>Problema: ${area.problem}</p>
+                        <p>Criado em: ${area.last}</p>
+                        ${area.image ? `<img src="${area.image}" alt="${area.title}">` : ''}
+                    `;
+                    areaCardsContainer.appendChild(card);
+
+                    // Clique no card centraliza o mapa
+                    card.addEventListener('click', () => {
+                        map.setView([area.lat, area.lng], 10, {animate: true});
+                        marker.openPopup();
+                    });
                 });
-            });
-        });
+
+                // Filtros
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                filterButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        filterButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const status = btn.getAttribute('data-status').toLowerCase();
+
+                        areaCardsContainer.querySelectorAll('.area-card').forEach((card, index) => {
+                            const cardStatus = card.getAttribute('data-status').toLowerCase();
+                            if(status === 'all' || cardStatus === status) {
+                                card.style.display = 'block';
+                                markers[index].addTo(map);
+                            } else {
+                                card.style.display = 'none';
+                                map.removeLayer(markers[index]);
+                            }
+                        });
+                    });
+                });
+            })
+            .catch(err => console.error("Erro ao carregar áreas:", err));
     </script>
 </body>
 </html>
